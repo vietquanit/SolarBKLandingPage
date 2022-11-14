@@ -3,37 +3,27 @@
         <table id="custom-table">
             <tr>
                 <th></th>
-                <th>Hoàn toàn hài lòng</th>
-                <th>Hài lòng</th>
-                <th>Bình thường</th>
-                <th>Không hài lòng</th>
-                <th>Hoàn toàn không hài lòng</th>
+                <th v-for="mark, indexMark in listMarks" :key="'mark-' + indexMark">{{mark.key}}</th>
             </tr>
-            <tr v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
+            <!-- <tr v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
                 <td class="text-left">Câu {{indexQuestion + 1}} : {{question}}</td>
                 <td v-for="answer,indexAnswer of listAnswers[indexQuestion]['listAnswer']" :key="indexAnswer">
                     <RadioButton :inputId="'answer-'+indexQuestion+'-'+indexAnswer" :name="'answer-'+indexQuestion" :value="answer.name" v-model="listAnswers[indexQuestion]['answered']"/>
                 </td>
-            </tr>
+            </tr> -->
         </table>
     </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
 // eslint-disable-next-line no-unused-vars
 export default {
-    inject: ['headerSetting','urlListQuestion'],
+    props: ['listMarks', 'listQuestions', 'listDepartments'],
     name: 'TableSurvey',
     setup() {
         
     },
     data() {
         return {
-            listQuestions: [
-                'xxxx là gì ? ',
-                'aaâ là gì ?',
-                'bà là gì ?'
-            ],
             listAnswers: [
                 {
                     idQuestion: '0',
@@ -120,50 +110,6 @@ export default {
             selectedCategory: null
         }
     },
-    created() {
-        this.initData();
-        console.log('data ' + this.listMarks)
-    },
-    methods: {
-        initData(){
-            let vm = this
-            let body={
-                "mode": "cxlandingInternal",
-                "departmentName":"SA",
-                "username":'xyz'
-            }
-            {{console.log(this.headerSetting)}}
-            this.axios.post(vm.urlListQuestion,body, vm.headerSetting).then(function (response) {
-                console.log('call'+JSON.stringify(response));
-                if(response.status == 200){
-                    // vm.$store.commit('getListMarks', response.data.marks)
-                    vm.getListMarks(response.data.marks);
-                    vm.getListQuestions(response.data.questions);
-                }
-            });
-        },
-        ...mapActions(['getListMarks', 'getListQuestions']),
-
-        // focusField(name){
-        //     this.editField = name;
-        // },
-        // blurField(){
-        //     this.editField = '';
-        // },
-        // showField(name){
-        //     return (this.user[name] == '' || this.editField == name)
-        // }
-    },
-    computed: {
-        listMarks: {
-            get() {
-                return this.$store.state.listMarks;
-            },
-            set(value) {
-                this.$store.dispatch("listMarks", value);
-            },
-        },
-    }
 }
 </script>
 <style scoped>

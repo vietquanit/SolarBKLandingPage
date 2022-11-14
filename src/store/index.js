@@ -1,29 +1,33 @@
 import { createStore } from 'vuex'
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
+    username:'',
+    password:'',
+    nameProject:'',
+    nameCustomer:'',
+    nameCompanyCustomer:'',
+    emailCompanyCustomer:'',
+    tokenLogin:'',
     listMarks: [],
-    listQuestions: []
+    listQuestions: [],
+    listDepartments: [],
+    selectDepartment: ''
   },
   getters: {
   },
   actions: {
-    getListMarks({ commit }, payload){
-      console.log('run')
-      commit('getListMarks', payload);
+    setValue({ commit }, payload){
+      commit('setValue', payload);
     },
-    getListQuestions({commit}, payload){
-      commit('getListQuestions', payload);
-    }
   },
   mutations: {
-    getListMarks(state, payload){
-      state.listMarks = payload;
+    setValue(state, payload){
+      state[payload.action] = payload.value
     },
-    getListQuestions(state, payload){
-      state.listQuestions = payload;
-    }
   },
   modules: {
-  }
+  },
+  plugins: [createPersistedState()],
 })

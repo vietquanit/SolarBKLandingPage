@@ -14,6 +14,15 @@
   max-width: 90%;
   
 }
+.btn-primary{
+  background: #0c4e99 !important;
+}
+.bg-table{
+  background-color: #f0f0f0 !important;
+}
+.color-primary{
+  color: #0c4e99 !important;
+}
 // nav {
 //   padding: 30px;
 

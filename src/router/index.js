@@ -8,6 +8,26 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/login',
+    name: 'LoginView',
+    component: () => import(/* webpackChunkName: "LoginView" */ '../views/LoginView.vue')
+  },
+  {
+    path: '/input-form',
+    name: 'InputForm',
+    component: () => import(/* webpackChunkName: "InputForm" */ '../views/InputForm.vue')
+  },
+  {
+    path: '/survey-internal',
+    name: 'SurveyInternal',
+    component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyInternal.vue')
+  },
+  {
+    path: '/survey-customer',
+    name: 'SurveyCustomer',
+    component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyCustomer.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting

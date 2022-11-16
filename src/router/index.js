@@ -23,7 +23,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "FormGetLink" */ '../views/FormGetLink.vue')
   },
   {
-    path: '/survey-internal',
+    path: '/survey-internal/:hashInfo',
     name: 'SurveyInternal',
     component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyInternal.vue')
   },
@@ -39,7 +39,12 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+  },
+  { 
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "about" */ '../views/NotFoundView.vue')
+  },
 ]
 
 const router = createRouter({

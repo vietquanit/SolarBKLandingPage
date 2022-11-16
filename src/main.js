@@ -20,17 +20,25 @@ import ColumnGroup from 'primevue/columngroup';     //optional for column groupi
 import Row from 'primevue/row';                     //optional for row
 import RadioButton from 'primevue/radiobutton';
 import Message from 'primevue/message';
+import Image from 'primevue/image';
+import Toast from 'primevue/toast';
+
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import ToastService from 'primevue/toastservice';
+import VueCryptojs from 'vue-cryptojs'
 
 const app = createApp(App);
 app.use(PrimeVue);
 app.use(store);
 app.use(router);
 app.use(VueAxios, axios)
+app.use(ToastService)
+app.use(VueCryptojs)
 // Create global variable
 app.provide('headerSetting',{'Content-Type':'application/json'});
-app.provide('urlListQuestion', 'https://script.google.com/macros/s/AKfycbzATy77xglvxeU6IFWKsLdB-T1eSrN7diPA9iRegpid0qkqFGQGoV_zlFeWK42CPON1ew/exec');
+app.provide('urlAPI', 'https://script.google.com/macros/s/AKfycbzATy77xglvxeU6IFWKsLdB-T1eSrN7diPA9iRegpid0qkqFGQGoV_zlFeWK42CPON1ew/exec');
+app.provide('keyEncrypt', 'solar bk landingpage');
 
 // Embed component global 
 app.component('InputText', InputText);
@@ -45,5 +53,7 @@ app.component('ColumnGroup', ColumnGroup);
 app.component('Row', Row);
 app.component('RadioButton', RadioButton);
 app.component('Message', Message);
+app.component('Image', Image);
+app.component('Toast', Toast);
 
 app.mount('#app')

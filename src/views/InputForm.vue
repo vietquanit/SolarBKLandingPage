@@ -19,6 +19,7 @@
                   class="p-inputtext-lg w-full"
                   v-model="v$.nameProject.$model"
                   :class="{ 'p-invalid': v$.nameProject.$invalid && submitted }"
+                  :disabled="isLoading"
                 />
                 <small
                   v-if="
@@ -51,6 +52,7 @@
                   :class="{
                     'p-invalid': v$.nameCustomer.$invalid && submitted,
                   }"
+                  :disabled="isLoading"
                 />
                 <small
                   v-if="
@@ -79,21 +81,22 @@
                   placeholder="Nhập email khách hàng...."
                   type="text"
                   class="p-inputtext-lg w-full"
-                  v-model="v$.emailCompanyCustomer.$model"
+                  v-model="v$.emailCustomer.$model"
                   :class="{
-                    'p-invalid': v$.emailCompanyCustomer.$invalid && submitted,
+                    'p-invalid': v$.emailCustomer.$invalid && submitted,
                   }"
+                  :disabled="isLoading"
                 />
                 <small
                   v-if="
-                    (v$.emailCompanyCustomer.$invalid && submitted) ||
-                    v$.emailCompanyCustomer.$pending.$response
+                    (v$.emailCustomer.$invalid && submitted) ||
+                    v$.emailCustomer.$pending.$response
                   "
                   class="p-error text-left block pt-2"
                   >{{
-                    v$.emailCompanyCustomer.required.$message.replace(
+                    v$.emailCustomer.required.$message.replace(
                       "Value",
-                      "emailCompanyCustomer"
+                      "emailCustomer"
                     )
                   }}</small
                 >
@@ -115,6 +118,7 @@
                   :class="{
                     'p-invalid': v$.nameCompanyCustomer.$invalid && submitted,
                   }"
+                  :disabled="isLoading"
                 />
                 <small
                   v-if="
@@ -145,6 +149,7 @@
                   pr-8
                   border-round-lg
                 "
+                :loading="isLoading"
                 @click="handleSubmit()"
               />
             </div>
@@ -160,12 +165,14 @@ import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import HeaderComponent from "./../components/Header.vue";
 export default {
+  inject: ["headerSetting", "urlAPI", "keyEncrypt"],
   name: "InputForm",
   components: { HeaderComponent: HeaderComponent },
   setup: () => ({ v$: useVuelidate() }),
   data() {
     return {
       submitted: false,
+      isLoading: false,
     };
   },
   validations() {
@@ -179,41 +186,79 @@ export default {
       nameCompanyCustomer: {
         required,
       },
-      emailCompanyCustomer: {
+      emailCustomer: {
         required,
       },
     };
   },
   methods: {
-    getFormSurvey(){
-        let vm = this;
-        let body = {
-            mode: "cxlandingGetToken",
-            username: "admin", // Ví dụ
-            password: "123456@#$", // Ví dụ
-        };
-        this.axios
-        .post(vm.urlListQuestion, body, vm.headerSetting)
-        .then(function (response) {
-          if (response.status == 200) {
-            console.log("json: " + JSON.stringify(response.data));
-            vm.setValue({ action: "tokenLogin", value: response.data.token });
-            // vm.getListQuestions(response.data.questions);
-            // vm.getListDepartments(response.data.questions);
-          }
-        });
-    },
     async handleSubmit(isFormValid) {
       this.submitted = true;
 
       if (!isFormValid) {
         return;
       }
-      await this.getFormSurvey();
-      this.$router.push({ path: "form-get-link" });
+      this.createLinkSurvey();
+    },
+    getFormSurvey() {
+      this.isLoading = true;
+      let body = {
+        mode: "cxlandingClick",
+        username: this.username, // Ví dụ
+        data: {
+          departmentName: this.departmentName, // Tên bộ phận
+          projectName: this.projectName, // Tên dự án,
+          customerName: this.customerName, // Tên KH
+          customerEmail: this.customerEmail, // Email KH
+          companyName: this.companyName, // Tên Công ty KH
+          internalLink: "", // Link Internal
+          customerLink: "", // Link dành cho KH
+        },
+      };
+      let vm = this;
+      vm.axios
+        .post(vm.urlAPI, body, vm.headerSetting)
+        .then(function (response) {
+          if (response.status == 200) {
+            vm.$toast.add({
+              severity: "success",
+              summary: "Thông báo",
+              detail: "Tạo form khảo sát thành công !",
+              life: 3000,
+            });
+            vm.$router.push({ path: "form-get-link" });
+          }
+        })
+        .catch((error) => {
+          vm.$toast.add({
+            severity: "error",
+            summary: "Thông báo",
+            detail: "Lỗi:  !" + error,
+            life: 3000,
+          });
+        })
+        .finally(() => {
+          vm.isLoading = false;
+        });
+    },
+    createLinkSurvey() {
+      let currentDateUnix = new Date().getTime();
+      let url="nameproject="+this.nameProject+"&namecustomer="+this.nameCustomer+"&emailcustomer="+this.emailCustomer+"&namecompanycustomer="+this.nameCompanyCustomer+"&date="+currentDateUnix;
+      let encrypted = this.$CryptoJS.AES.encrypt(url, this.keyEncrypt).toString();
+      console.log(encrypted)
+      // this.getFormSurvey();
+      // https://www.npmjs.com/package/vue-cryptojs
     },
   },
   computed: {
+    username: {
+      get() {
+        return this.$store.state.username;
+      },
+      set(value) {
+        this.$store.commit("setValue", { action: "username", value: value });
+      },
+    },
     nameProject: {
       get() {
         return this.$store.state.nameProject;
@@ -244,13 +289,13 @@ export default {
         });
       },
     },
-    emailCompanyCustomer: {
+    emailCustomer: {
       get() {
-        return this.$store.state.emailCompanyCustomer;
+        return this.$store.state.emailCustomer;
       },
       set(value) {
         this.$store.commit("setValue", {
-          action: "emailCompanyCustomer",
+          action: "emailCustomer",
           value: value,
         });
       },

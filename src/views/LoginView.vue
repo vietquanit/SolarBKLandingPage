@@ -30,7 +30,7 @@
                   placeholder="Nhập Username...."
                   type="text"
                   class="w-full p-inputtext-lg border-round-md"
-                  v-model="v$.username.$model" :class="{'p-invalid':v$.username.$invalid && submitted}"
+                  v-model="v$.username.$model" :class="{'p-invalid':v$.username.$invalid && submitted}" :disabled="isLoading"
                 />
                 <small v-if="(v$.username.$invalid && submitted) || v$.username.$pending.$response" class="p-error text-left block pt-2">{{v$.username.required.$message.replace('Value', 'Username')}}</small>
               </div>
@@ -43,7 +43,7 @@
                   placeholder="Nhập password...."
                   type="password"
                   class="w-full p-inputtext-lg border-round-md"
-                  v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}"
+                  v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" :disabled="isLoading"
                 />
                 <small v-if="(v$.password.$invalid && submitted) || v$.password.$pending.$response" class="p-error text-left block pt-2">{{v$.password.required.$message.replace('Value', 'Password')}}</small>
               </div>
@@ -52,7 +52,6 @@
         </div>
 
         <div class="col-10 sm:col-8 md:col-8 mx-auto">
-          {{ tokenLogin }}
           <Button
             label="Đăng nhập"
             class="
@@ -67,6 +66,7 @@
               border-round-lg
             "
             type="submit"
+            :loading="isLoading"
           />
         </div>
         </form>
@@ -80,12 +80,13 @@ import { required } from "@vuelidate/validators";
 import { mapActions } from "vuex";
 import HeaderComponent from "./../components/Header.vue";
 export default {
-  inject: ["headerSetting", "urlListQuestion"],
+  inject: ["headerSetting", "urlAPI"],
   name: "LoginView",
   components: { HeaderComponent: HeaderComponent },
   setup: () => ({ v$: useVuelidate() }),
   data() {
     return {
+      isLoading: false,
       submitted: false,
     };
   },
@@ -99,24 +100,28 @@ export default {
       },
     };
   },
-  created() {},
+  created() {
+    
+  },
   methods: {
-    getToken() {
+    login() {
       let vm = this;
+      vm.isLoading = true;
       let body = {
         mode: "cxlandingGetToken",
         username: "admin", // Ví dụ
         password: "123456@#$", // Ví dụ
       };
-      this.axios
-        .post(vm.urlListQuestion, body, vm.headerSetting)
+      vm.axios
+        .post(vm.urlAPI, body, vm.headerSetting)
         .then(function (response) {
           if (response.status == 200) {
-            console.log("json: " + JSON.stringify(response.data));
-            vm.setValue({ action: "tokenLogin", value: response.data.token });
-            // vm.getListQuestions(response.data.questions);
-            // vm.getListDepartments(response.data.questions);
+            vm.tokenLogin = response.data;
+            vm.$toast.add({severity:'success', summary: 'Thông báo', detail:'Login thành công', life: 3000});
+            vm.$router.push({ path: "input-form" });
           }
+        }).catch((err)=>{
+          vm.$toast.add({severity:'error', summary: 'Thông báo', detail:'Lỗi: ' + err, life: 3000});
         });
     },
     ...mapActions(["setValue"]),
@@ -126,9 +131,7 @@ export default {
         if (!isFormValid) {
             return;
         }
-
-      this.getToken();
-      this.$router.push({ path: "input-form" });
+      this.login();
     },
   },
   computed: {
@@ -152,6 +155,9 @@ export default {
       get() {
         return this.$store.state.tokenLogin;
       },
+      set(value){
+        this.$store.commit("setValue", {action:"tokenLogin", value: value})
+      }
     },
   },
 };

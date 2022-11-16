@@ -8,7 +8,7 @@ export default createStore({
     nameProject:'',
     nameCustomer:'',
     nameCompanyCustomer:'',
-    emailCompanyCustomer:'',
+    emailCustomer:'',
     tokenLogin:'',
     listMarks: [],
     listQuestions: [],
@@ -17,7 +17,8 @@ export default createStore({
     linkInternal:'',
     linkCustomer:'',
     messageText:'',
-    showMessage: false
+    showMessage: false,
+    stateMessage: 'success'
   },
   getters: {
   },

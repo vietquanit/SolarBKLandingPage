@@ -13,7 +13,11 @@ export default createStore({
     listMarks: [],
     listQuestions: [],
     listDepartments: [],
-    selectDepartment: ''
+    selectDepartment: '',
+    linkInternal:'',
+    linkCustomer:'',
+    messageText:'',
+    showMessage: false
   },
   getters: {
   },

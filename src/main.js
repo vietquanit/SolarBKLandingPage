@@ -19,6 +19,7 @@ import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';     //optional for column grouping
 import Row from 'primevue/row';                     //optional for row
 import RadioButton from 'primevue/radiobutton';
+import Message from 'primevue/message';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
@@ -43,5 +44,6 @@ app.component('Column', Column);
 app.component('ColumnGroup', ColumnGroup);
 app.component('Row', Row);
 app.component('RadioButton', RadioButton);
+app.component('Message', Message);
 
 app.mount('#app')

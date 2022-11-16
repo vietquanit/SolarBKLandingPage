@@ -18,6 +18,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "InputForm" */ '../views/InputForm.vue')
   },
   {
+    path: '/form-get-link',
+    name: 'FormGetLink',
+    component: () => import(/* webpackChunkName: "FormGetLink" */ '../views/FormGetLink.vue')
+  },
+  {
     path: '/survey-internal',
     name: 'SurveyInternal',
     component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyInternal.vue')

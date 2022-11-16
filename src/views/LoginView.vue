@@ -7,10 +7,10 @@
           box-login
           flex
           col-12
+          sm:col-10
           md:col-8
           lg:col-6
-          xl-col-4
-          sm:col-10
+          xl:col-4
           flex-column
           mt-5
           md:mt-0
@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <div class="col-12">
+        <div class="col-10 sm:col-8 md:col-8 mx-auto">
           {{ tokenLogin }}
           <Button
             label="Đăng nhập"
@@ -159,8 +159,6 @@ export default {
 
 <style scoped lang="scss">
 .login {
-  img {
-  }
   .box-login {
     margin: 0;
     position: absolute;
@@ -174,8 +172,6 @@ export default {
     input {
       background: transparent;
     }
-  }
-  .btn-login {
   }
 }
 </style>

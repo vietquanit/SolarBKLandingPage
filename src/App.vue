@@ -23,6 +23,9 @@
 .color-primary{
   color: #0c4e99 !important;
 }
+label{
+  text-align: left;
+}
 // nav {
 //   padding: 30px;
 

@@ -210,7 +210,7 @@ export default {
         return;
       }
       await this.getFormSurvey();
-      this.$router.push({ path: "survey-internal" });
+      this.$router.push({ path: "form-get-link" });
     },
   },
   computed: {

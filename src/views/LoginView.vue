@@ -109,25 +109,32 @@ export default {
       vm.isLoading = true;
       let body = {
         mode: "cxlandingGetToken",
-        username: "admin", // Ví dụ
-        password: "123456@#$", // Ví dụ
+        username: vm.username, // Ví dụ admin
+        password: vm.password, // Ví dụ 123456@#$
       };
       vm.axios
         .post(vm.urlAPI, body, vm.headerSetting)
         .then(function (response) {
-          if (response.status == 200) {
-            vm.tokenLogin = response.data;
+          console.log(JSON.stringify(response))
+          if (response.data.status == true) {
+            vm.tokenLogin = response.data.token;
+            vm.authenticated = true;
             vm.$toast.add({severity:'success', summary: 'Thông báo', detail:'Login thành công', life: 3000});
             vm.$router.push({ path: "input-form" });
+          } else {
+            vm.$toast.add({severity:'error', summary: 'Thông báo', detail:'Sai tài khoản hoặc mật khẩu', life: 3000});
           }
         }).catch((err)=>{
+          vm.tokenLogin = '';
+          vm.authenticated = false;
           vm.$toast.add({severity:'error', summary: 'Thông báo', detail:'Lỗi: ' + err, life: 3000});
+        }).finally(()=>{
+          vm.isLoading = false;
         });
     },
     ...mapActions(["setValue"]),
     handleSubmit(isFormValid) {
        this.submitted = true;
-
         if (!isFormValid) {
             return;
         }
@@ -157,6 +164,14 @@ export default {
       },
       set(value){
         this.$store.commit("setValue", {action:"tokenLogin", value: value})
+      }
+    },
+    authenticated: {
+      get() {
+        return this.$store.state.authenticated;
+      },
+      set(value){
+        this.$store.commit("setValue", {action:"authenticated", value: value})
       }
     },
   },

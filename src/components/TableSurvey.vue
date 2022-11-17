@@ -5,16 +5,23 @@
                 <th></th>
                 <th v-for="mark, indexMark in listMarks" :key="'mark-' + indexMark">{{mark.key}}</th>
             </tr>
-            <!-- <tr v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
-                <td class="text-left">Câu {{indexQuestion + 1}} : {{question}}</td>
-                <td v-for="answer,indexAnswer of listAnswers[indexQuestion]['listAnswer']" :key="indexAnswer">
-                    <RadioButton :inputId="'answer-'+indexQuestion+'-'+indexAnswer" :name="'answer-'+indexQuestion" :value="answer.name" v-model="listAnswers[indexQuestion]['answered']"/>
+            <tr v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
+                <td class="text-left" v-if="question.hasOwnProperty('Cauhoicuaphongbankhacdanhgia')">
+                    Câu {{question['STT']}} : {{question['Cauhoicuaphongbankhacdanhgia']}}
                 </td>
-            </tr> -->
+                <td class="text-left" v-else-if="question.hasOwnProperty('Cauhoituhoi')">
+                    Câu {{question['STT']}} : {{question['Cauhoituhoi']}}
+                </td>
+                <td v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark">
+                    {{question['Cautraloi']}}
+                    <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark" :value="mark.value" v-model="question['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
+                </td>
+            </tr>
         </table>
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 // eslint-disable-next-line no-unused-vars
 export default {
     props: ['listMarks', 'listQuestions', 'listDepartments'],
@@ -22,93 +29,17 @@ export default {
     setup() {
         
     },
+    created(){
+    },
     data() {
         return {
-            listAnswers: [
-                {
-                    idQuestion: '0',
-                    listAnswer: [{
-                            name:'Hoàn toàn hài lòng',
-                            key:'1'
-                        },
-                        {
-                            name:'Hài lòng',
-                            key:'2'
-                        },
-                        {
-                            name:'Bình thường',
-                            key:'3'
-                        },
-                        {
-                            name:'Không hài lòng',
-                            key:'4'
-                        },
-                        {
-                            name:'Hoàn toàn không hài lòng',
-                            key:'5'
-                        }
-                    ],
-                    answered: null
-                },
-                {
-                    idQuestion: '1',
-                    listAnswer: [{
-                            name:'Hoàn toàn hài lòng',
-                            key:'1'
-                        },
-                        {
-                            name:'Hài lòng',
-                            key:'2'
-                        },
-                        {
-                            name:'Bình thường',
-                            key:'3'
-                        },
-                        {
-                            name:'Không hài lòng',
-                            key:'4'
-                        },
-                        {
-                            name:'Hoàn toàn không hài lòng',
-                            key:'5'
-                        }
-                    ],
-                    answered: null
-                },
-                {
-                    idQuestion: '2',
-                    listAnswer: [{
-                            name:'Hoàn toàn hài lòng',
-                            key:'1'
-                        },
-                        {
-                            name:'Hài lòng',
-                            key:'2'
-                        },
-                        {
-                            name:'Bình thường',
-                            key:'3'
-                        },
-                        {
-                            name:'Không hài lòng',
-                            key:'4'
-                        },
-                        {
-                            name:'Hoàn toàn không hài lòng',
-                            key:'5'
-                        }
-                    ],
-                    answered: null
-                }
-            ],
-            categories: [
-                {name: 'Accounting', key: 'A'}, 
-                {name: 'Marketing', key: 'M'}, 
-                {name: 'Production', key: 'P'}, 
-                {name: 'Research', key: 'R'}
-            ],
-            selectedCategory: null
         }
+    },
+    methods: {
+        selectMark(sttQuestion, valueMark){
+            this.updateSelectMark({'sttQuestion': sttQuestion, 'valueMark':valueMark});
+        },
+        ...mapActions(["updateSelectMark"]),
     },
 }
 </script>

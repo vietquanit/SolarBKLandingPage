@@ -201,7 +201,6 @@ export default {
       this.createLinkSurvey();
     },
     getFormSurvey() {
-      this.isLoading = true;
       let body = {
         mode: "cxlandingClick",
         username: this.username, // Ví dụ
@@ -211,8 +210,8 @@ export default {
           customerName: this.customerName, // Tên KH
           customerEmail: this.customerEmail, // Email KH
           companyName: this.companyName, // Tên Công ty KH
-          internalLink: "", // Link Internal
-          customerLink: "", // Link dành cho KH
+          internalLink: this.linkInternal, // Link Internal
+          customerLink: this.linkCustomer, // Link dành cho KH
         },
       };
       let vm = this;
@@ -241,14 +240,43 @@ export default {
           vm.isLoading = false;
         });
     },
-    createLinkSurvey() {
+    async createLinkSurvey() {
+      this.isLoading = true;
       let currentDateUnix = new Date().getTime();
-      let url="nameproject="+this.nameProject+"&namecustomer="+this.nameCustomer+"&emailcustomer="+this.emailCustomer+"&namecompanycustomer="+this.nameCompanyCustomer+"&date="+currentDateUnix;
-      let encrypted = this.$CryptoJS.AES.encrypt(url, this.keyEncrypt).toString();
-      console.log(encrypted)
-      // this.getFormSurvey();
+      // let url="nameproject="+this.nameProject+"&namecustomer="+this.nameCustomer+"&emailcustomer="+this.emailCustomer+"&namecompanycustomer="+this.nameCompanyCustomer+"&date="+currentDateUnix;
+      // let encryptInternal = this.$CryptoJS.AES.encrypt(''+currentDateUnix, this.keyEncrypt).toString().replace(/\+/g,'p1L2u3S').replace(/\//g,'s1L2a3S4h').replace(/=/g,'e1Q2u3A4l');
+      // let encryptCustomer = this.$CryptoJS.AES.encrypt(''+currentDateUnix, this.keyEncrypt).toString().replace(/\+/g,'p1L2u3S').replace(/\//g,'s1L2a3S4h').replace(/=/g,'e1Q2u3A4l');
+      // this.linkInternal = "survey-internal/"+encryptInternal;
+      // this.linkCustomer = "survey-customer/"+encryptCustomer;
+      this.linkInternal = "survey-internal/"+currentDateUnix;
+      this.linkCustomer = "survey-customer/"+currentDateUnix;
+      let self =this;
+      self.checkValidLogin().then(function (response) {
+          if(response.status == true){
+            self.getFormSurvey();
+          }
+        })
+        .catch((error) => {
+          self.$toast.add({
+            severity: "error",
+            summary: "Thông báo",
+            detail: "Lỗi:  !" + error,
+            life: 3000,
+          });
+        });
+      // if(self.checkValidLogin()){
+      //   
+      // }
       // https://www.npmjs.com/package/vue-cryptojs
     },
+    checkValidLogin(){
+      let body = {
+        mode: "cxlandingLogin",
+        token: this.tokenLogin
+      };
+      let promise = this.axios.post(this.urlAPI, body, this.headerSetting)
+      return promise.then((response) => response.data)
+    }
   },
   computed: {
     username: {
@@ -296,6 +324,39 @@ export default {
       set(value) {
         this.$store.commit("setValue", {
           action: "emailCustomer",
+          value: value,
+        });
+      },
+    },
+    linkInternal: {
+      get() {
+        return this.$store.state.linkInternal;
+      },
+      set(value) {
+        this.$store.commit("setValue", {
+          action: "linkInternal",
+          value: value,
+        });
+      },
+    },
+    linkCustomer: {
+      get() {
+        return this.$store.state.linkCustomer;
+      },
+      set(value) {
+        this.$store.commit("setValue", {
+          action: "linkCustomer",
+          value: value,
+        });
+      },
+    },
+    tokenLogin: {
+      get() {
+        return this.$store.state.tokenLogin;
+      },
+      set(value) {
+        this.$store.commit("setValue", {
+          action: "tokenLogin",
           value: value,
         });
       },

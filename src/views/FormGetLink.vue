@@ -3,9 +3,6 @@
     <HeaderComponent />
     <div class="grid">
       <div class="col-12">
-        <!-- <Message v-for="msg of messages" :severity="msg.severity" :key="msg.content">{{msg.content}}</Message> -->
-        <Message severity="success" :life="5000" :sticky="false" v-show="this.showMessage">{{messageText}}</Message>
-
         <Panel header="Tạo khảo sát" class="mt-4 box">
           <div class="box-input">
             <div class="field grid pt-4 mb-4">
@@ -16,15 +13,19 @@
               </label>
               <span class="p-input-icon-right col-12 md:col-9">
                 <i
-                  class="pi pi-copy mr-3 cursor-pointer"
+                  class="pi pi-copy mr-3 cursor-pointer copy-color" style="right: 3rem !important"
                   @click="copyLinkCustomer()"
+                />
+                <i
+                  class="pi pi-window-maximize mr-3 cursor-pointer open-color"
+                  @click="openLinkCustomer()"
                 />
                 <InputText
                   id="url-customer"
                   placeholder="Link..."
                   type="text"
                   class="p-inputtext-lg w-full"
-                  v-model="linkCustomer" :disabled="this.showMessage"
+                  v-model="linkCustomer"
                 />
               </span>
             </div>
@@ -36,15 +37,19 @@
               </label>
               <span class="p-input-icon-right col-12 md:col-9">
                 <i
-                  class="pi pi-copy mr-3 cursor-pointer"
+                  class="pi pi-copy mr-3 cursor-pointer copy-color " style="right: 3rem !important"
                   @click="copyLinkInternal()"
+                />
+                <i
+                  class="pi pi-window-maximize mr-3 cursor-pointer open-color"
+                  @click="openLinkInternal()"
                 />
                 <InputText
                   id="url-internal"
                   placeholder="Link..."
                   type="text"
                   class="p-inputtext-lg w-full"
-                  v-model="linkInternal" :disabled="this.showMessage"
+                  v-model="linkInternal"
                 />
               </span>
             </div>
@@ -57,29 +62,64 @@
 <script>
 import HeaderComponent from "./../components/Header.vue";
 export default {
+  inject: ["headerSetting", "urlAPI", "keyEncrypt"],
   name: "FormGetLink",
   components: { HeaderComponent: HeaderComponent },
   setup() {},
   data() {
-    return {};
+    return {
+      domainName:window.location.origin 
+    };
+  },
+  created(){
+    this.checkValidLogin().then(function (response) {
+      if(response.status == false){
+        this.$router.push({'path':'/login'})
+      }
+    })
+    .catch((error) => {
+      this.$router.push({'path':'/login'})
+      this.$toast.add({
+        severity: "error",
+        summary: "Thông báo",
+        detail: "Lỗi:  !" + error,
+        life: 3000,
+      });
+    });
   },
   methods: {
+    openLinkInternal(){
+      window.open(this.domainName + "/"+this.linkInternal, '_blank');
+    },
+    openLinkCustomer(){
+      window.open(this.domainName + "/"+this.linkCustomer, '_blank');
+    },
     copyLinkInternal() {
-      this.showMessage = true;
-      this.messageText = 'Copy Link nội bộ thành công!';
-      navigator.clipboard.writeText(this.linkInternal);
-      setTimeout(() => {
-          this.showMessage = false;
-      }, 5000);
+      this.$toast.add({
+        severity: "success",
+        summary: "Thông báo",
+        detail: "Copy Link nội bộ thành công!",
+        life: 3000,
+      });
+      navigator.clipboard.writeText(this.domainName + "/survey-internal/" + this.linkInternal);
     },
     copyLinkCustomer() {
-      this.showMessage = true;
-      this.messageText = 'Copy Link khách hàng thành công!';
-      navigator.clipboard.writeText(this.linkCustomer);
-      setTimeout(() => {
-          this.showMessage = false;
-      }, 5000);
+      this.$toast.add({
+        severity: "success",
+        summary: "Thông báo",
+        detail: "Copy Link khách hàng thành công!",
+        life: 3000,
+      });
+      navigator.clipboard.writeText(this.domainName + "/survey-customer/" + this.linkCustomer);
     },
+    checkValidLogin(){
+      let body = {
+        mode: "cxlandingLogin",
+        token: this.tokenLogin
+      };
+      let promise = this.axios.post(this.urlAPI, body, this.headerSetting)
+      return promise.then((response) => response.data)
+    }
   },
   computed: {
     linkInternal: {
@@ -104,24 +144,13 @@ export default {
         });
       },
     },
-    messageText: {
+    tokenLogin: {
       get() {
-        return this.$store.state.messageText;
+        return this.$store.state.tokenLogin;
       },
       set(value) {
         this.$store.commit("setValue", {
-          action: "messageText",
-          value: value,
-        });
-      },
-    },
-    showMessage: {
-      get() {
-        return this.$store.state.showMessage;
-      },
-      set(value) {
-        this.$store.commit("setValue", {
-          action: "showMessage",
+          action: "tokenLogin",
           value: value,
         });
       },
@@ -130,4 +159,7 @@ export default {
 };
 </script>
 <style>
+.form-get-link .p-panel-header .p-panel-title {
+  color: #0c4e99 !important;
+}
 </style>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import store from './../store/index'
 
 const routes = [
   {
@@ -15,41 +16,47 @@ const routes = [
   {
     path: '/input-form',
     name: 'InputForm',
-    component: () => import(/* webpackChunkName: "InputForm" */ '../views/InputForm.vue')
+    component: () => import(/* webpackChunkName: "InputForm" */ '../views/InputForm.vue'), 
+    meta: { requiresLogin: true}
   },
   {
     path: '/form-get-link',
     name: 'FormGetLink',
-    component: () => import(/* webpackChunkName: "FormGetLink" */ '../views/FormGetLink.vue')
+    component: () => import(/* webpackChunkName: "FormGetLink" */ '../views/FormGetLink.vue'), 
+    meta: { requiresLogin: true}
   },
   {
     path: '/survey-internal/:hashInfo',
     name: 'SurveyInternal',
-    component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyInternal.vue')
+    component: () => import(/* webpackChunkName: "SurveyInternal" */ '../views/FormSurveyInternal.vue'), 
+    meta: { requiresLogin: true}
   },
   {
-    path: '/survey-customer',
+    path: '/survey-customer/:hashInfo',
     name: 'SurveyCustomer',
-    component: () => import(/* webpackChunkName: "InputForm" */ '../views/FormSurveyCustomer.vue')
+    component: () => import(/* webpackChunkName: "SurveyCustomer" */ '../views/FormSurveyCustomer.vue')
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   { 
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: () => import(/* webpackChunkName: "about" */ '../views/NotFoundView.vue')
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFoundView.vue')
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to)=>{
+  if (to.matched.some(record => record.meta.requiresLogin) && store.state.authenticated == false) {
+    return { name: 'LoginView' }
+  }
 })
 
 export default router

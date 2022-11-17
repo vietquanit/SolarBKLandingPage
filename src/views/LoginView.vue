@@ -115,7 +115,6 @@ export default {
       vm.axios
         .post(vm.urlAPI, body, vm.headerSetting)
         .then(function (response) {
-          console.log(JSON.stringify(response))
           if (response.data.status == true) {
             vm.tokenLogin = response.data.token;
             vm.authenticated = true;

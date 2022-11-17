@@ -22,7 +22,7 @@ import RadioButton from 'primevue/radiobutton';
 import Message from 'primevue/message';
 import Image from 'primevue/image';
 import Toast from 'primevue/toast';
-
+import BlockUI from 'primevue/blockui';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import ToastService from 'primevue/toastservice';
@@ -32,9 +32,9 @@ const app = createApp(App);
 app.use(PrimeVue);
 app.use(store);
 app.use(router);
-app.use(VueAxios, axios)
-app.use(ToastService)
-app.use(VueCryptojs)
+app.use(VueAxios, axios);
+app.use(ToastService);
+app.use(VueCryptojs);
 // Create global variable
 app.provide('headerSetting',{'Content-Type':'application/json'});
 app.provide('urlAPI', 'https://script.google.com/macros/s/AKfycbzATy77xglvxeU6IFWKsLdB-T1eSrN7diPA9iRegpid0qkqFGQGoV_zlFeWK42CPON1ew/exec');
@@ -55,5 +55,6 @@ app.component('RadioButton', RadioButton);
 app.component('Message', Message);
 app.component('Image', Image);
 app.component('Toast', Toast);
+app.component('BlockUI', BlockUI);
 
 app.mount('#app')

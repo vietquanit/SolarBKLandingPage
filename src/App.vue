@@ -17,7 +17,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #0a5ea2;
+  // color: #0a5ea2;
 }
 .container{
   max-width: 90%;

@@ -202,16 +202,15 @@ export default {
     },
     getFormSurvey() {
       let body = {
-        mode: "cxlandingClick",
-        username: this.username, // Ví dụ
-        data: {
-          departmentName: this.departmentName, // Tên bộ phận
-          projectName: this.projectName, // Tên dự án,
-          customerName: this.customerName, // Tên KH
-          customerEmail: this.customerEmail, // Email KH
-          companyName: this.companyName, // Tên Công ty KH
-          internalLink: this.linkInternal, // Link Internal
-          customerLink: this.linkCustomer, // Link dành cho KH
+        "mode": "cxlandingClick",
+        "username": this.username, // Ví dụ
+        "data": {
+          "projectName": this.nameProject, // Tên dự án,
+          "customerName": this.nameCustomer, // Tên KH
+          "customerEmail": this.emailCustomer, // Email KH
+          "companyName": this.nameCompanyCustomer, // Tên Công ty KH
+          "internalLink": this.linkInternal, // Link Internal
+          "customerLink": this.linkCustomer, // Link dành cho KH
         },
       };
       let vm = this;

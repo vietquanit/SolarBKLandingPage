@@ -15,12 +15,12 @@ export default createStore({
     listMarks: [],
     listQuestions: [],
     listDepartments: [],
+    lastObjectQuestionSuggest: null,
     selectDepartment: '',
     linkInternal:'',
     linkCustomer:'',
-    messageText:'',
+    textSuggest:null,
     showMessage: false,
-    stateMessage: 'success'
   },
   getters: {
   },
@@ -42,6 +42,8 @@ export default createStore({
     },
     updateListQuestions({ commit }, payload){
       let listQuests = this.state.dataAll['questions'][payload.indexItem];
+      this.state.lastObjectQuestionSuggest = listQuests['questions'][listQuests['questions'].length - 1];
+      listQuests['questions'].pop(); // remove last item
       commit('getListQuestions', listQuests['questions']);
     },
     getListDepartments({ commit }, payload){
@@ -58,8 +60,7 @@ export default createStore({
         arrayDepartment.push(obj)
       })
       commit('getListDepartments', arrayDepartment);
-      console.log();
-    }
+    },
   },
   mutations: {
     setValue(state, payload){
@@ -77,7 +78,9 @@ export default createStore({
     getListDepartments(state, payload){
       state.listDepartments = payload
     },
-
+    updateTextSuggest(state, payload){
+      state.textSuggest = payload
+    },
   },
   modules: {
   },

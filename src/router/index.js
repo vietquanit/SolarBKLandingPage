@@ -37,9 +37,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "SurveyCustomer" */ '../views/FormSurveyCustomer.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/report',
+    name: 'Report',
+    component: () => import(/* webpackChunkName: "Report" */ '../views/ReportView.vue')
   },
   { 
     path: '/:pathMatch(.*)*',

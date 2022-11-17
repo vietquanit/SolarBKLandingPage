@@ -1,22 +1,55 @@
 <template>
     <div class="col-12">
         <table id="custom-table">
-            <tr>
-                <th></th>
-                <th v-for="mark, indexMark in listMarks" :key="'mark-' + indexMark">{{mark.key}}</th>
-            </tr>
-            <tr v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
-                <td class="text-left" v-if="question.hasOwnProperty('Cauhoicuaphongbankhacdanhgia')">
-                    Câu {{question['STT']}} : {{question['Cauhoicuaphongbankhacdanhgia']}}
-                </td>
-                <td class="text-left" v-else-if="question.hasOwnProperty('Cauhoituhoi')">
-                    Câu {{question['STT']}} : {{question['Cauhoituhoi']}}
-                </td>
-                <td v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark">
-                    {{question['Cautraloi']}}
-                    <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark" :value="mark.value" v-model="question['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th v-for="mark, indexMark in listMarks" :key="'mark-' + indexMark">{{mark.key}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="question,indexQuestion in listQuestions" :key="'question-'+indexQuestion">
+                    <tr>
+                        <!-- Code for survey internal -->
+                        <td class="text-left" v-if="question.hasOwnProperty('Cauhoicuaphongbankhacdanhgia')">
+                            Câu {{question['STT']}} : {{question['Cauhoicuaphongbankhacdanhgia']}}
+                        </td>
+                        <td class="text-left" v-else-if="question.hasOwnProperty('Cauhoituhoi')">
+                            Câu {{question['STT']}} : {{question['Cauhoituhoi']}}
+                        </td>
+                        <!-- Code for survey customer -->
+                        <td class="text-left" v-else-if="question.hasOwnProperty('Cauhoi')">
+                            Câu {{question['STT']}} : {{question['Cauhoi']}}
+                        </td>
+                        <!-- <td class="text-left" v-if="question.hasOwnProperty('Cauhoinho') && question['Cauhoinho'].length > 0">
+                            Câu {{question['STT']}} : {{question['Cauhoicuaphongbankhacdanhgia']}}
+                        </td> -->
+                        <template v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark">
+                            <td v-if="question['Cauhoinho'].length === 0">
+                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark" :value="mark.value" v-model="question['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
+                            </td>
+                            <td v-else></td>
+                        </template>
+                    </tr>
+                    <template v-if="question['Cauhoinho'].length > 0">
+                        <tr v-for="quest, indexQuest in question['Cauhoinho']" :key="'question-'+indexQuestion+'sub-'+indexQuest">
+                            <td class="text-left pl-4" v-if="quest.hasOwnProperty('Cauhoicuaphongbankhacdanhgia')">
+                                Câu {{quest['STT']}} : {{quest['Cauhoicuaphongbankhacdanhgia']}}
+                            </td>
+                            <td class="text-left pl-4" v-else-if="quest.hasOwnProperty('Cauhoituhoi')">
+                                Câu {{quest['STT']}} : {{quest['Cauhoituhoi']}}
+                            </td>
+                            <td class="text-left pl-4" v-else-if="quest.hasOwnProperty('Cauhoi')">
+                                Câu {{quest['STT']}} : {{quest['Cauhoi']}}
+                            </td>
+                            <td v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark+'-sub-'+indexQuest">
+                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark+'-sub-'+indexQuest" :value="mark.value" v-model="quest['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
+                            </td>
+                        </tr>
+                    </template>
+                </template>
+                
+            </tbody>
         </table>
     </div>
 </template>
@@ -43,7 +76,7 @@ export default {
     },
 }
 </script>
-<style scoped>
+<style>
 #custom-table{
     font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -61,5 +94,14 @@ export default {
     text-align: center;
     /* background-color: #04AA6D; */
     color: black;
+}
+.p-radiobutton .p-radiobutton-box{
+    border: 2px solid #ff0000 !important;
+}
+.p-radiobutton .p-radiobutton-box.p-highlight{
+    background: transparent;
+}
+.p-radiobutton-box.p-highlight .p-radiobutton-icon{
+    background: #ff0000;
 }
 </style>

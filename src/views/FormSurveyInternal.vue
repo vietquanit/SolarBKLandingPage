@@ -1,66 +1,80 @@
 <template>
   <div class="survey-internal container mx-auto">
-    <HeaderComponent />
-    <div class="col-12">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt nobis
-      beatae nemo. Aliquid nobis quae, suscipit sequi quaerat animi iusto
-      dolorum veritatis cum placeat enim nesciunt, consectetur ut quam
-      perspiciatis.
+    <div class="inline-block mx-auto mt-5" v-if="isLoadingPage">
+      <lottie-player
+        src="https://assets6.lottiefiles.com/packages/lf20_nvskuoaw.json"
+        class="customProgress"
+        background="transparent"
+        style="width: 300px; height: 300px"
+        speed="1"
+        autoplay
+      ></lottie-player>
     </div>
-    <div class="col-4 mt-6">
-      <Dropdown
-        v-model="selectDepartment"
-        :options="listDepartments"
-        optionLabel="name"
-        placeholder="Lựa chọn phòng ban."
-        class="w-full text-left border-2"
-        :modelValue="selectDepartment" @change="onChangeDepartment()"
-      >
-        <template #value="slotProps">
-                <div class="department" v-if="slotProps.value">
-                    <div>Bạn thuộc phòng ban: {{slotProps.value.name}}</div>
-                </div>
-            </template>
-        <template #option="slotProps">
-                <div class="department-item">
-                    <div>Bạn thuộc phòng ban: {{slotProps.option.name}}</div>
-                </div>
-            </template>
-      </Dropdown>
-    </div>
-    <TableSurveyComponent
-      :listMarks="listMarks"
-      :listQuestions="listQuestions"
-      :listDepartments="listDepartments"
-    />
-    <div class="col-12">
-      <p class="text-left">
-        Bạn có góp ý nào để cải thiện sản phẩm / dịch vụ được tốt hơn không?
-      </p>
-      <Textarea
-        :autoResize="true"
-        placeholder="Nhập góp ý của bạn vào đây..."
-        rows="5"
-        cols="30"
-        class="w-full"
+    <div v-else>
+      <HeaderComponent />
+      <div class="col-12">
+        <div class="text-left mt-4">
+          {{ dataAll["intro"] }}
+        </div>
+      </div>
+      <div class="col-4 mt-6">
+        <Dropdown
+          v-model="selectDepartment"
+          :options="listDepartments"
+          optionLabel="name"
+          placeholder="Lựa chọn phòng ban."
+          class="w-full text-left border-2"
+          :modelValue="selectDepartment"
+          @change="onChangeDepartment()"
+        >
+          <template #value="slotProps">
+            <div class="department" v-if="slotProps.value">
+              <div>Bạn thuộc phòng ban: {{ slotProps.value.name }}</div>
+            </div>
+          </template>
+          <template #option="slotProps">
+            <div class="department-item">
+              <div>Bạn thuộc phòng ban: {{ slotProps.option.name }}</div>
+            </div>
+          </template>
+        </Dropdown>
+      </div>
+      <TableSurveyComponent
+        :listMarks="listMarks"
+        :listQuestions="listQuestions"
+        :listDepartments="listDepartments"
       />
-    </div>
-    <div class="col-12">
-      <Button
-        label="Đăng nhập"
-        class="
-          btn-primary btn-login
-          text-white
-          font-bold
-          mt-4
-          pt-3
-          pb-3
-          pl-8
-          pr-8
-          border-round-lg
-        "
-        @click="handleSubmit()"
-      />
+      <div class="col-12">
+        <p class="text-left">
+          Bạn có góp ý nào để cải thiện sản phẩm / dịch vụ được tốt hơn không?
+        </p>
+        <Textarea
+          :autoResize="true"
+          placeholder="Nhập góp ý của bạn vào đây..."
+          rows="5"
+          cols="30"
+          class="w-full"
+          v-model="textSuggest"
+        />
+      </div>
+      <div class="col-12">
+        <Button
+          label="Hoàn tất khảo sát"
+          class="
+            btn-primary btn-login
+            text-white
+            font-bold
+            mt-4
+            pt-3
+            pb-3
+            pl-8
+            pr-8
+            border-round-lg
+          "
+          :loading="isLoadingButton"
+          @click="handleSubmit()"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -78,10 +92,13 @@ export default {
   },
   data() {
     return {
-      currentUrl: window.location.href,
+      isLoadingPage: false,
+      isLoadingButton: false,
+      currentPathName: location.pathname,
     };
   },
   created() {
+    this.isLoadingPage = true;
     let self = this;
     self
       .checkValidLogin()
@@ -104,13 +121,51 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.$router.push({ path: "survey-customer" });
+      this.isLoadingButton = true;
+      let pathUrl = this.currentPathName.slice(1);
+      let self = this;
+      this.lastObjectQuestionSuggest["Cautraloi"] = this.textSuggest;
+      let data = this.listQuestions;
+      data.push(this.lastObjectQuestionSuggest);
+      let body = {
+        mode: "cxlandingResponse",
+        link: pathUrl,
+        data: data,
+      };
+      self.axios
+        .post(self.urlAPI, body, self.headerSetting)
+        .then(function (response) {
+          if (response.data.status == true) {
+            localStorage.clear();
+            self.$toast.add({
+              severity: "success",
+              summary: "Thông báo",
+              detail: "Hoàn tất khảo sát!",
+              life: 3000,
+            });
+            window.location.reload()
+            // self.$router.push({ path: "/report" });
+          }
+        })
+        .catch((error) => {
+          self.$toast.add({
+            severity: "error",
+            summary: "Thông báo",
+            detail: "Lỗi:  !" + error,
+            life: 3000,
+          });
+        })
+        .finally(() => {
+          self.isLoadingButton = false;
+        });
+      // this.$router.push({ path: "survey-customer" });
     },
     initData() {
+      let pathUrl = this.currentPathName.slice(1);
       let self = this;
       let body = {
         mode: "cxlandingOpenLink",
-        link: self.linkInternal,
+        link: pathUrl,
       };
       self.axios
         .post(self.urlAPI, body, self.headerSetting)
@@ -129,6 +184,9 @@ export default {
             detail: "Lỗi:  !" + error,
             life: 3000,
           });
+        })
+        .finally(() => {
+          self.isLoadingPage = false;
         });
     },
     checkValidLogin() {
@@ -139,11 +197,16 @@ export default {
       let promise = this.axios.post(this.urlAPI, body, this.headerSetting);
       return promise.then((response) => response.data);
     },
-    onChangeDepartment(){
-        this.listQuestions = [];
-        this.updateListQuestions(this.selectDepartment);
+    onChangeDepartment() {
+      this.listQuestions = [];
+      this.updateListQuestions(this.selectDepartment);
     },
-    ...mapActions(["getListMarks", "getListQuestions", "getListDepartments", "updateListQuestions"]),
+    ...mapActions([
+      "getListMarks",
+      "getListQuestions",
+      "getListDepartments",
+      "updateListQuestions",
+    ]),
   },
   computed: {
     listMarks: {
@@ -221,6 +284,28 @@ export default {
       set(value) {
         this.$store.commit("setValue", {
           action: "dataAll",
+          value: value,
+        });
+      },
+    },
+    textSuggest: {
+      get() {
+        return this.$store.state.textSuggest;
+      },
+      set(value) {
+        this.$store.commit("setValue", {
+          action: "textSuggest",
+          value: value,
+        });
+      },
+    },
+    lastObjectQuestionSuggest: {
+      get() {
+        return this.$store.state.lastObjectQuestionSuggest;
+      },
+      set(value) {
+        this.$store.commit("setValue", {
+          action: "lastObjectQuestionSuggest",
           value: value,
         });
       },

@@ -136,13 +136,13 @@ export default {
         .post(self.urlAPI, body, self.headerSetting)
         .then(function (response) {
           if (response.data.status == true) {
-            localStorage.clear();
             self.$toast.add({
               severity: "success",
               summary: "Thông báo",
               detail: "Hoàn tất khảo sát!",
               life: 3000,
             });
+            localStorage.clear();
             window.location.reload()
             // self.$router.push({ path: "/report" });
           }

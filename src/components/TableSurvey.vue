@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12">
+    <div class="col-12 overflow-auto">
         <table id="custom-table">
             <thead>
                 <tr>
@@ -81,6 +81,7 @@ export default {
     font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  min-width: 620px;
 }
 #custom-table td, #custom-table th{
     border: 1px solid #ddd;

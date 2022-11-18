@@ -26,7 +26,7 @@
                         </td> -->
                         <template v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark">
                             <td v-if="question['Cauhoinho'].length === 0">
-                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark" :value="mark.value" v-model="question['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
+                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark" :value="mark.value" v-model="question['Cautraloi']" @click.stop.prevent="selectMark(question['STT'], mark.value)"/>
                             </td>
                             <td v-else></td>
                         </template>
@@ -43,7 +43,7 @@
                                 Câu {{quest['STT']}} : {{quest['Cauhoi']}}
                             </td>
                             <td v-for="mark,indexMark of listMarks" :key="'question-'+indexQuestion+'-mark-'+indexMark+'-sub-'+indexQuest">
-                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark+'-sub-'+indexQuest" :value="mark.value" v-model="quest['Cautraloi']" @change="selectMark(question['STT'], mark.value)"/>
+                                <RadioButton :name="'radio-question-'+indexQuestion+'-mark'+indexMark+'-sub-'+indexQuest" :value="mark.value" v-model="quest['Cautraloi']" @click.stop.prevent="selectMark(question['STT'], mark.value)"/>
                             </td>
                         </tr>
                     </template>

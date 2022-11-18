@@ -36,7 +36,13 @@ app.use(VueAxios, axios);
 app.use(ToastService);
 app.use(VueCryptojs);
 // Create global variable
-app.provide('headerSetting',{'Content-Type':'application/json'});
+app.provide('headerSetting',{
+    'Content-Type':'application/json',
+    // "redirect": "follow",
+    // "mode": 'no-cors',
+    // 'Access-Control-Allow-Credentials':true,
+    // 'Access-Control-Allow-Origin': '*'
+});
 app.provide('urlAPI', 'https://script.google.com/macros/s/AKfycbzATy77xglvxeU6IFWKsLdB-T1eSrN7diPA9iRegpid0qkqFGQGoV_zlFeWK42CPON1ew/exec');
 app.provide('keyEncrypt', 'solar bk landingpage');
 

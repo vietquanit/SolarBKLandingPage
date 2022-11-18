@@ -72,7 +72,7 @@ export default {
     return {
       isLoadingPage: false,
       isLoadingButton: false,
-      currentPathName: location.pathname,
+      currentPathName: location.href,
     };
   },
   created() {
@@ -81,18 +81,17 @@ export default {
   methods: {
     handleSubmit() {
       this.isLoadingButton = true;
-      let pathUrl = this.currentPathName.slice(1);
       this.lastObjectQuestionSuggest["Cautraloi"] = this.textSuggest;
       let data = this.listQuestions;
       data.push(this.lastObjectQuestionSuggest);
       let body = {
         mode: "cxlandingResponse",
-        link: pathUrl,
+        link: this.currentPathName,
         data: data,
       };
       let self = this
       this.axios
-        .post(self.urlAPI, body, self.headerSetting)
+        .post(self.urlAPI, JSON.stringify(body), {header: self.headerSetting})
         .then(function (response) {
           if (response.data.status == true) {
             self.$toast.add({
@@ -120,14 +119,13 @@ export default {
     },
     initData() {
         this.isLoadingPage = true;
-      let pathUrl = this.currentPathName.slice(1);
       let self = this;
       let body = {
         mode: "cxlandingOpenLink",
-        link: pathUrl,
+        link: this.currentPathName,
       };
       self.axios
-        .post(self.urlAPI, body, self.headerSetting)
+        .post(self.urlAPI, JSON.stringify(body), {header: self.headerSetting})
         .then(function (response) {
           if (response.status == 200) {
             let data = response.data.data;
@@ -155,7 +153,7 @@ export default {
         mode: "cxlandingLogin",
         token: this.tokenLogin,
       };
-      let promise = this.axios.post(this.urlAPI, body, this.headerSetting);
+      let promise = this.axios.post(this.urlAPI, JSON.stringify(body), {header: this.headerSetting});
       return promise.then((response) => response.data);
     },
     ...mapActions([

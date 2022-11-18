@@ -173,6 +173,7 @@ export default {
     return {
       submitted: false,
       isLoading: false,
+      domainName: window.location.origin
     };
   },
   validations() {
@@ -215,7 +216,7 @@ export default {
       };
       let vm = this;
       vm.axios
-        .post(vm.urlAPI, body, vm.headerSetting)
+        .post(vm.urlAPI, JSON.stringify(body), {header: vm.headerSetting})
         .then(function (response) {
           if (response.status == 200) {
             vm.$toast.add({
@@ -247,8 +248,8 @@ export default {
       // let encryptCustomer = this.$CryptoJS.AES.encrypt(''+currentDateUnix, this.keyEncrypt).toString().replace(/\+/g,'p1L2u3S').replace(/\//g,'s1L2a3S4h').replace(/=/g,'e1Q2u3A4l');
       // this.linkInternal = "survey-internal/"+encryptInternal;
       // this.linkCustomer = "survey-customer/"+encryptCustomer;
-      this.linkInternal = "survey-internal/"+currentDateUnix;
-      this.linkCustomer = "survey-customer/"+currentDateUnix;
+      this.linkInternal = this.domainName+"/survey-internal/"+currentDateUnix;
+      this.linkCustomer = this.domainName+"/survey-customer/"+currentDateUnix;
       let self =this;
       self.checkValidLogin().then(function (response) {
           if(response.status == true){
@@ -263,17 +264,13 @@ export default {
             life: 3000,
           });
         });
-      // if(self.checkValidLogin()){
-      //   
-      // }
-      // https://www.npmjs.com/package/vue-cryptojs
     },
     checkValidLogin(){
       let body = {
         mode: "cxlandingLogin",
         token: this.tokenLogin
       };
-      let promise = this.axios.post(this.urlAPI, body, this.headerSetting)
+      let promise = this.axios.post(this.urlAPI, JSON.stringify(body), {header: this.headerSetting})
       return promise.then((response) => response.data)
     }
   },

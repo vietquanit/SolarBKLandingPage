@@ -13,19 +13,19 @@
               </label>
               <span class="p-input-icon-right col-12 md:col-9">
                 <i
-                  class="pi pi-copy mr-3 cursor-pointer copy-color" style="right: 3rem !important"
-                  @click="copyLinkCustomer()"
+                  class="pi pi-copy mr-3 cursor-pointer copy-color z-2" style="right: 3rem !important"
+                  @click="copyLinkCustomer()" :disabled="false"
                 />
                 <i
-                  class="pi pi-window-maximize mr-3 cursor-pointer open-color"
-                  @click="openLinkCustomer()"
+                  class="pi pi-window-maximize mr-3 cursor-pointer open-color z-2"
+                  @click="openLinkCustomer()" :disabled="false"
                 />
                 <InputText
                   id="url-customer"
                   placeholder="Link..."
                   type="text"
                   class="p-inputtext-lg w-full"
-                  v-model="linkCustomer"
+                  v-model="linkCustomer" disabled
                 />
               </span>
             </div>
@@ -37,19 +37,19 @@
               </label>
               <span class="p-input-icon-right col-12 md:col-9">
                 <i
-                  class="pi pi-copy mr-3 cursor-pointer copy-color " style="right: 3rem !important"
-                  @click="copyLinkInternal()"
+                  class="pi pi-copy mr-3 cursor-pointer copy-color z-2 " style="right: 3rem !important"
+                  @click="copyLinkInternal()" :disabled="false"
                 />
                 <i
-                  class="pi pi-window-maximize mr-3 cursor-pointer open-color"
-                  @click="openLinkInternal()"
+                  class="pi pi-window-maximize mr-3 cursor-pointer open-color z-2"
+                  @click="openLinkInternal()" :disabled="false"
                 />
                 <InputText
                   id="url-internal"
                   placeholder="Link..."
                   type="text"
                   class="p-inputtext-lg w-full"
-                  v-model="linkInternal"
+                  v-model="linkInternal" disabled
                 />
               </span>
             </div>
@@ -89,10 +89,10 @@ export default {
   },
   methods: {
     openLinkInternal(){
-      window.open(this.domainName + "/"+this.linkInternal, '_blank');
+      window.open(this.linkInternal, '_blank');
     },
     openLinkCustomer(){
-      window.open(this.domainName + "/"+this.linkCustomer, '_blank');
+      window.open(this.linkCustomer, '_blank');
     },
     copyLinkInternal() {
       this.$toast.add({
@@ -101,7 +101,7 @@ export default {
         detail: "Copy Link nội bộ thành công!",
         life: 3000,
       });
-      navigator.clipboard.writeText(this.domainName + "/survey-internal/" + this.linkInternal);
+      navigator.clipboard.writeText(this.linkInternal);
     },
     copyLinkCustomer() {
       this.$toast.add({
@@ -110,14 +110,14 @@ export default {
         detail: "Copy Link khách hàng thành công!",
         life: 3000,
       });
-      navigator.clipboard.writeText(this.domainName + "/survey-customer/" + this.linkCustomer);
+      navigator.clipboard.writeText(this.linkCustomer);
     },
     checkValidLogin(){
       let body = {
         mode: "cxlandingLogin",
         token: this.tokenLogin
       };
-      let promise = this.axios.post(this.urlAPI, body, this.headerSetting)
+      let promise = this.axios.post(this.urlAPI, JSON.stringify(body), {header: this.headerSetting})
       return promise.then((response) => response.data)
     }
   },

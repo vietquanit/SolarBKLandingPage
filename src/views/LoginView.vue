@@ -113,7 +113,8 @@ export default {
         password: vm.password, // Ví dụ 123456@#$
       };
       vm.axios
-        .post(vm.urlAPI, body, vm.headerSetting)
+        // .post(vm.urlAPI, JSON.stringify(body), {header: vm.headerSetting})
+        .post(vm.urlAPI, JSON.stringify(body), {header: vm.headerSetting})
         .then(function (response) {
           if (response.data.status == true) {
             vm.tokenLogin = response.data.token;

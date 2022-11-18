@@ -13,14 +13,14 @@
     <div v-else>
       <HeaderComponent />
       <div class="col-12">
-        <div class="text-left mt-4">
-          {{ dataAll["intro"] }}
+        <div class="text-left mt-4" v-html="dataAll['intro']">
         </div>
       </div>
       <TableSurveyComponent
         :listMarks="listMarks"
         :listQuestions="listQuestions"
         :listDepartments="listDepartments"
+        :isDisabled="isLoadingButton"
       />
       <div class="col-12">
         <p class="text-left">
@@ -32,7 +32,7 @@
           rows="5"
           cols="30"
           class="w-full"
-          v-model="textSuggest"
+          v-model="textSuggest" :disabled="isLoadingButton"
         />
       </div>
       <div class="col-12">
@@ -82,7 +82,7 @@ export default {
     handleSubmit() {
       this.isLoadingButton = true;
       this.lastObjectQuestionSuggest["Cautraloi"] = this.textSuggest;
-      let data = this.listQuestions;
+      let data = JSON.parse(JSON.stringify(this.listQuestions));
       data.push(this.lastObjectQuestionSuggest);
       let body = {
         mode: "cxlandingResponse",

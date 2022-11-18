@@ -13,8 +13,7 @@
     <div v-else>
       <HeaderComponent />
       <div class="col-12">
-        <div class="text-left mt-4">
-          {{ dataAll["intro"] }}
+        <div class="text-left mt-4" v-html="dataAll['intro']">
         </div>
       </div>
       <div class="col-4 mt-6">
@@ -43,6 +42,7 @@
         :listMarks="listMarks"
         :listQuestions="listQuestions"
         :listDepartments="listDepartments"
+        :isDisabled="isLoadingButton"
       v-show="listQuestions.length > 0"/>
       <div class="col-12" v-show="listQuestions.length > 0">
         <p class="text-left">
@@ -54,7 +54,7 @@
           rows="5"
           cols="30"
           class="w-full"
-          v-model="textSuggest"
+          v-model="textSuggest" :disabled="isLoadingButton"
         />
       </div>
       <div class="col-12">
@@ -128,7 +128,7 @@ export default {
       this.isLoadingButton = true;
       let self = this;
       this.lastObjectQuestionSuggest["Cautraloi"] = this.textSuggest;
-      let data = this.listQuestions;
+      let data = JSON.parse(JSON.stringify(this.listQuestions));
       data.push(this.lastObjectQuestionSuggest);
       let body = {
         mode: "cxlandingResponse",

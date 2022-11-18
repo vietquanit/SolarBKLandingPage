@@ -43,8 +43,8 @@
         :listMarks="listMarks"
         :listQuestions="listQuestions"
         :listDepartments="listDepartments"
-      />
-      <div class="col-12">
+      v-show="listQuestions.length > 0"/>
+      <div class="col-12" v-show="listQuestions.length > 0">
         <p class="text-left">
           Bạn có góp ý nào để cải thiện sản phẩm / dịch vụ được tốt hơn không?
         </p>
@@ -98,11 +98,11 @@ export default {
     };
   },
   created() {
+    // set null
+    this.listQuestions = [];
     this.isLoadingPage = true;
     let self = this;
-    self
-      .checkValidLogin()
-      .then(function (response) {
+    self.checkValidLogin().then(function (response) {
         if (response.status == false) {
           self.$router.push({ path: "/login" });
         } else {
@@ -118,6 +118,10 @@ export default {
           life: 3000,
         });
       });
+    // check if department isset data
+    if(self.selectDepartment){
+      self.onChangeDepartment()
+    }
   },
   methods: {
     handleSubmit() {

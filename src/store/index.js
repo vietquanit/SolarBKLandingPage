@@ -84,5 +84,21 @@ export default createStore({
   },
   modules: {
   },
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    paths:[
+      'username',
+      'nameProject',
+      'nameCustomer',
+      'nameCompanyCustomer',
+      'emailCustomer',
+      'tokenLogin',
+      'authenticated',
+      'dataAll',
+      'selectDepartment',
+      'linkInternal',
+      'linkCustomer',
+      'textSuggest',
+      'showMessage'
+    ]
+  })],
 })

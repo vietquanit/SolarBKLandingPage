@@ -118,7 +118,9 @@ export default {
       // this.$router.push({ path: "survey-customer" });
     },
     initData() {
-        this.isLoadingPage = true;
+      // set null
+      this.listQuestions = [];
+      this.isLoadingPage = true;
       let self = this;
       let body = {
         mode: "cxlandingOpenLink",

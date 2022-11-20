@@ -59,6 +59,9 @@ router.beforeEach((to)=>{
   }
   if(to.path == '/' && store.state.authenticated == false){
     return { name: 'LoginView' };
+  } else if(to.path == '/' && store.state.authenticated == true){
+    return { name: 'FormGetLink' };
+    
   }
 })
 

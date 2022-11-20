@@ -158,8 +158,16 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
 .form-get-link .p-panel-header .p-panel-title {
   color: #0c4e99 !important;
+  font-family: 'Roboto', sans-serif;
+}
+.form-get-link {
+  .box{
+    label, input, button{
+      font-family: 'Roboto', sans-serif;
+    }
+  }
 }
 </style>

@@ -57,7 +57,7 @@
             class="
               btn-primary btn-login
               text-white
-              font-bold
+              font-normal
               mt-4
               pt-3
               pb-3
@@ -192,6 +192,10 @@ export default {
     }
     input {
       background: transparent;
+      font-family: 'Roboto', sans-serif;
+    }
+    .btn-login{
+      font-family: 'Roboto', sans-serif;
     }
   }
 }

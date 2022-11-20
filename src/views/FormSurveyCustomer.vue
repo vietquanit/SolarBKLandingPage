@@ -41,7 +41,6 @@
           class="
             btn-primary btn-login
             text-white
-            font-bold
             mt-4
             pt-3
             pb-3
@@ -100,8 +99,8 @@ export default {
               detail: "Hoàn tất khảo sát!",
               life: 3000,
             });
-            localStorage.clear();
-            window.location.reload();
+            self.$router.push({ path: "/report" });
+            // window.location.reload();
           }
         })
         .catch((error) => {
@@ -276,5 +275,8 @@ export default {
   border: 1px solid #e6e6e6 !important;
   padding: 3px !important;
   border-radius: 100% !important;
+}
+.survey-internal p, .survey-internal .p-inputtext, .survey-internal button{
+  font-family: 'Roboto', sans-serif;
 }
 </style>

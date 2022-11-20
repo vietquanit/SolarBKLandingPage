@@ -142,7 +142,7 @@ export default {
 </script>
 <style>
 #custom-table {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', sans-serif;
   border-collapse: collapse;
   width: 100%;
   min-width: 620px;
@@ -151,6 +151,7 @@ export default {
 #custom-table th {
   border: 1px solid #ddd;
   padding: 8px;
+  font-family: 'Roboto', sans-serif;
 }
 #custom-table tr:nth-child(even) {
   background-color: #f2f2f2;

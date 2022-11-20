@@ -361,8 +361,16 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .input-form .box .p-panel-header .p-panel-title {
   color: #0c4e99 !important;
+      font-family: 'Roboto', sans-serif;
+}
+.input-form {
+  .box{
+    label, input, button{
+      font-family: 'Roboto', sans-serif;
+    }
+  }
 }
 </style>

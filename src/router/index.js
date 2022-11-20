@@ -55,7 +55,10 @@ const router = createRouter({
 
 router.beforeEach((to)=>{
   if (to.matched.some(record => record.meta.requiresLogin) && store.state.authenticated == false) {
-    return { name: 'LoginView' }
+    return { name: 'LoginView' };
+  }
+  if(to.path == '/' && store.state.authenticated == false){
+    return { name: 'LoginView' };
   }
 })
 
